@@ -3,6 +3,7 @@ using System.Reflection;
 using Identity.API.Domain;
 using Identity.API.Models;
 using Identity.API.Services;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,7 +42,7 @@ namespace Identity.API
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddTransient<ILoginService<ApplicationUser>, LoginService>();
+            services.AddServices<ConfigurationDbContext>();
 
             var connectionString = Configuration["ConnectionString"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
