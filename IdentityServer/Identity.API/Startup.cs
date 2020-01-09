@@ -77,7 +77,6 @@ namespace Identity.API
             })
             .Services.AddTransient<IProfileService, ProfileService>();
 
-            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddControllers();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
@@ -106,6 +105,7 @@ namespace Identity.API
             app.UseStaticFiles();
 
             app.UseForwardedHeaders();
+
             // Adds IdentityServer
             app.UseIdentityServer();
             app.UseRouting();

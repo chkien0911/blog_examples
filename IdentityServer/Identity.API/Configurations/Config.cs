@@ -1,6 +1,7 @@
 ﻿using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Identity.API.Configurations
 {
@@ -27,8 +28,9 @@ namespace Identity.API.Configurations
         }
 
         // client want to access resources (aka scopes)
-        public static IEnumerable<Client> GetClients(Dictionary<string, string> clientsUrl)
+        public static IEnumerable<Client> GetClients(Dictionary<string, List<string>> clientsUrl)
         {
+            var urlsMvcWeb = clientsUrl["Mvc"];
             return new List<Client>
             {
                 new Client
@@ -39,20 +41,14 @@ namespace Identity.API.Configurations
                     {
                         new Secret("secret".Sha256())
                     },
-                    ClientUri = $"{clientsUrl["Mvc"]}",                             // public uri of the client
+                    ClientUri = $"{urlsMvcWeb[0]}",                             // public uri of the client
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     AllowAccessTokensViaBrowser = false,
                     RequireConsent = false,
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    RedirectUris = new List<string>
-                    {
-                        $"{clientsUrl["Mvc"]}/signin-oidc"
-                    },
-                    PostLogoutRedirectUris = new List<string>
-                    {
-                        $"{clientsUrl["Mvc"]}/signout-callback-oidc"
-                    },
+                    RedirectUris = urlsMvcWeb.Select(u => $"{u}/signin-oidc").ToList(),
+                    PostLogoutRedirectUris = urlsMvcWeb.Select(u => $"{u}/signout-callback-oidc").ToList(),
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

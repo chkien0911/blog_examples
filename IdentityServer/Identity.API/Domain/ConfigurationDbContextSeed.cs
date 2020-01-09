@@ -1,10 +1,7 @@
 ﻿using Identity.API.Configurations;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,11 +12,10 @@ namespace Identity.API.Domain
     {
         public async Task SeedAsync(ConfigurationDbContext context, IConfiguration configuration)
         {
+            var clientUrls = new Dictionary<string, List<string>>();
 
-            //callbacks urls from config:
-            var clientUrls = new Dictionary<string, string>();
-
-            clientUrls.Add("Mvc", configuration.GetValue<string>("MvcClient"));
+            var clients = configuration.GetValue<string>("MvcClient").Split(';').ToList();
+            clientUrls.Add("Mvc", clients);
 
             if (!context.Clients.Any())
             {
